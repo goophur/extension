@@ -32,31 +32,7 @@ const defaultPrefs = [{
     },
 ]
 
-const handleCookie = function () {
-    chrome.cookies.get({
-        url: "http://localhost:3000",
-        name: "token",
-    }, cookie => {
-        console.log(cookie.value);
-        const token = cookie.value;
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost:3000/api/auth", true);
-        xhr.setRequestHeader("x-auth-token", token);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-                console.log(xhr.responseText);
-                chrome.storage.sync.set({
-                    user: xhr.responseText
-                }, () => {
-                    console.log("Updated!")
-                })
-            }
-        }
-        xhr.send();
-    })
-}
-
-chrome.runtime.onInstalled.addListener(() => {
+const setDefaults = async function () {
     chrome.storage.sync.set({
         user: {
             prefs: defaultPrefs
@@ -64,10 +40,74 @@ chrome.runtime.onInstalled.addListener(() => {
         isLoggedIn: false
     }, () => {
         console.log("defaults set!")
-    });
-    handleCookie();
+    })
+}
+
+const updateUser = async function (userData) {
+    chrome.storage.sync.set({
+        user: userData,
+        isLoggedIn: true
+    }, () => {
+        console.log("Updated!");
+    })
+}
+
+const requestUserData = function (token) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/api/auth", true);
+    xhr.setRequestHeader("x-auth-token", token);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            response = xhr.responseText;
+            console.log(response);
+            if (response.msg === "Token is not valid") {
+                console.log("Invalid token");
+            } else {
+                console.log(response);
+                updataUser(response);
+            }
+        }
+    }
+    xhr.send();
+}
+
+const checkForCookie = async function () {
+    try {
+        const {
+            value: token
+        } = await chrome.cookies.get({
+            url: "http://localhost:3000",
+            name: "token",
+        });
+        if (token) {
+            requestUserData(token);
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+chrome.runtime.onInstalled.addListener(async () => {
+    await setDefaults();
+    checkForCookie();
 })
 
-chrome.cookies.onChanged.addListener((changeInfo) => {
-    console.log(changeInfo.cookie);
+
+//might be excessive conditionals here - revise
+chrome.cookies.onChanged.addListener(({
+    removed,
+    cookie
+}) => {
+    if (cookie.domain === "localhost") {
+        if (removed) {
+            console.log("Cookie removed!");
+            setDefaults();
+        } else {
+            if (cookie.name === "token") {
+                console.log("Cookie updated!")
+                const token = cookie.value;
+                requestUserData(token);
+            }
+        }
+    }
 })
