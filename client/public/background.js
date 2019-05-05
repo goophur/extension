@@ -1,3 +1,5 @@
-// chrome.runtime.onInstalled.addListener( () => {
-//     //
-// })
+chrome.cookies.get({
+    url: "",
+    name: "",
+    
+})
