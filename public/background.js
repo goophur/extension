@@ -33,7 +33,7 @@ const defaultPrefs = [{
 ]
 
 const setDefaults = async function () {
-    chrome.storage.sync.set({
+    await chrome.storage.sync.set({
         user: {
             prefs: defaultPrefs
         },
@@ -44,7 +44,7 @@ const setDefaults = async function () {
 }
 
 const updateUser = async function (userData) {
-    chrome.storage.sync.set({
+    await chrome.storage.sync.set({
         user: userData,
         isLoggedIn: true
     }, () => {
@@ -59,12 +59,11 @@ const requestUserData = function (token) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             response = xhr.responseText;
-            console.log(response);
             if (response.msg === "Token is not valid") {
                 console.log("Invalid token");
             } else {
                 console.log(response);
-                updataUser(response);
+                updateUser(response);
             }
         }
     }
@@ -72,19 +71,20 @@ const requestUserData = function (token) {
 }
 
 const checkForCookie = async function () {
-    try {
-        const {
-            value: token
-        } = await chrome.cookies.get({
-            url: "http://localhost:3000",
-            name: "token",
-        });
+
+    chrome.cookies.get({
+        url: "http://localhost:3000",
+        name: "token",
+    }, cookie => {
+        const token = cookie.value;
         if (token) {
             requestUserData(token);
         }
-    } catch (err) {
-        console.log(err)
-    }
+    });
+
+    // } catch (err) {
+    //     console.log(err)
+    // }
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
