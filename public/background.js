@@ -33,7 +33,7 @@ const defaultPrefs = [{
 ]
 
 const setDefaults = async function () {
-    await chrome.storage.sync.set({
+    chrome.storage.sync.set({
         user: {
             prefs: defaultPrefs
         },
@@ -43,12 +43,12 @@ const setDefaults = async function () {
     })
 }
 
-const updateUser = async function (userData) {
-    await chrome.storage.sync.set({
+const updateUser = function (userData) {
+    chrome.storage.sync.set({
         user: userData,
         isLoggedIn: true
     }, () => {
-        console.log("Updated!");
+        console.log("User updated!");
     })
 }
 
@@ -70,8 +70,7 @@ const requestUserData = function (token) {
     xhr.send();
 }
 
-const checkForCookie = async function () {
-
+const checkForCookie = function () {
     chrome.cookies.get({
         url: "http://localhost:3000",
         name: "token",
@@ -81,10 +80,6 @@ const checkForCookie = async function () {
             requestUserData(token);
         }
     });
-
-    // } catch (err) {
-    //     console.log(err)
-    // }
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -93,11 +88,8 @@ chrome.runtime.onInstalled.addListener(async () => {
 })
 
 
-//might be excessive conditionals here - revise
-chrome.cookies.onChanged.addListener(({
-    removed,
-    cookie
-}) => {
+//might have excessive conditionals here - revise
+chrome.cookies.onChanged.addListener(({ removed, cookie }) => {
     if (cookie.domain === "localhost") {
         if (removed) {
             console.log("Cookie removed!");
