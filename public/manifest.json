@@ -3,26 +3,26 @@
   "short_name": "goophur",
   "name": "goo e. goophur",
   "description": "build better queries with this google advanced search gui",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "browser_action": {
     "default_popup": "index.html",
-    "default_title": "Open the popup"
-  },
-  "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'",
-  "icons": {
-    "16": "16.png",
-    "48": "48.png",
-    "128": "128.png"
-  },
-  "permissions": [
-    "http://localhost:*/*",
-    "activeTab",
-    "cookies",
-    "tabs",
-    "storage"
-  ],
-   "background": {
-     "scripts": ["background.js"],
-     "persistent": false
-   }
+    "default_title": "goophur",
+    "default_icons": {
+       "16": "16.png",
+       "48": "48.png",
+       "128": "128.png"
+  }
+},
+"content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'",
+"permissions": [
+  "http://localhost:*/*",
+  "activeTab",
+  "cookies",
+  "tabs",
+  "storage"
+],
+"background": {
+  "scripts": ["background.js"],
+  "persistent": false
+}
 }
