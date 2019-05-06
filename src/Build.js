@@ -1,51 +1,16 @@
 import React, { Component, Fragment } from "react";
-import { FormInput, SavePrefs, SelectInput, SubmitQuery } from "../components";
-import { Consumer } from "../context";
-import axios from "axios";
-
-const paramsArr = require("../paramsArr");
+// import axios from "axios";
+import { FormInput, SavePrefs, SelectInput, SubmitQuery } from "./components";
+import defaultPrefs from "./defaultPrefs";
+const paramsArr = require("./paramsArr");
 
 // An array containing only those parameters that are set to be displayed by default in the user's prefs.
 // Until we get the user-specific information from the database, we will use the following as the default/placeholder:
-const prefsArr = [
-  {
-    name: "Search Term(s)",
-    type: "FormInput",
-    value: "",
-    querySegment: value => {
-      return value ? `&as_q=${value.replace(/\s+/g, "+")}` : "";
-    }
-  },
-  {
-    name: "Exact Match",
-    type: "FormInput",
-    value: "",
-    querySegment: value => {
-      return value ? `&as_epq=${value.replace(/\s+/g, "+")}` : "";
-    }
-  },
-  {
-    name: "Include Any",
-    type: "FormInput",
-    value: "",
-    querySegment: value => {
-      return value ? `&as_oq=%28${value.replace(/\s+/g, "+")}%29` : "";
-    }
-  },
-  {
-    name: "Exclude Each",
-    type: "FormInput",
-    value: "",
-    querySegment: value => {
-      return value ? `&as_eq=${value.replace(/\s+/g, "+")}` : "";
-    }
-  }
-];
 
 class Build extends Component {
   state = {
     // The array of param objects (each of which includes a name describing its behavior and a value representing the user's input):
-    params: prefsArr,
+    params: defaultPrefs,
     // The param whose input the user is currently editing:
     edit: "",
     // The index number by which we will target the unique param button (as distinguished from others with the same name) the user is currently editing:
@@ -216,73 +181,73 @@ class Build extends Component {
     });
   };
 
-  renderSavePrefs(isAuthenticated, id, dispatch) {
-    if (isAuthenticated) {
-      let paramsToSave = this.state.params;
-      paramsToSave = paramsToSave.map(param => {
-        let value;
-        switch (param.type) {
-          case "FormInput":
-            value = "";
-            break;
-          case "Range":
-            value = ["", ""];
-            break;
-          case "RangeWithUnits":
-            value = ["", "", ""];
-            break;
-          case "Select":
-            value = "";
-            break;
-          default:
-            return console.log("No valid param type detected.");
-        }
-        const blankValueParam =
-          param.type === "Select"
-            ? {
-                name: param.name,
-                type: param.type,
-                options: param.options,
-                value: value,
-                querySegment: param.querySegment
-              }
-            : {
-                name: param.name,
-                type: param.type,
-                value: value,
-                querySegment: param.querySegment
-              };
-        return blankValueParam;
-      });
-      return (
-        <div>
-          <h2>
-            (Optional:) Click "Save Changes" to save the buttons you're currently using as your default search params!
-          </h2>
-          <SavePrefs
-            onClick={() => this.savePrefs(id, paramsToSave, dispatch)}
-          />
-        </div>
-      );
-    }
-  }
+  // renderSavePrefs(isAuthenticated, id, dispatch) {
+  //   if (isAuthenticated) {
+  //     let paramsToSave = this.state.params;
+  //     paramsToSave = paramsToSave.map(param => {
+  //       let value;
+  //       switch (param.type) {
+  //         case "FormInput":
+  //           value = "";
+  //           break;
+  //         case "Range":
+  //           value = ["", ""];
+  //           break;
+  //         case "RangeWithUnits":
+  //           value = ["", "", ""];
+  //           break;
+  //         case "Select":
+  //           value = "";
+  //           break;
+  //         default:
+  //           return console.log("No valid param type detected.");
+  //       }
+  //       const blankValueParam =
+  //         param.type === "Select"
+  //           ? {
+  //               name: param.name,
+  //               type: param.type,
+  //               options: param.options,
+  //               value: value,
+  //               querySegment: param.querySegment
+  //             }
+  //           : {
+  //               name: param.name,
+  //               type: param.type,
+  //               value: value,
+  //               querySegment: param.querySegment
+  //             };
+  //       return blankValueParam;
+  //     });
+  //     return (
+  //       <div>
+  //         <h2>
+  //           (Optional:) Click "Save Changes" to save the buttons you're currently using as your default search params!
+  //         </h2>
+  //         <SavePrefs
+  //           onClick={() => this.savePrefs(id, paramsToSave, dispatch)}
+  //         />
+  //       </div>
+  //     );
+  //   }
+  // }
 
-  async savePrefs(id, params, dispatch) {
-    params.map(param => {
-      return param.querySegment = `${param.querySegment}`;
-    });
-    const user = { id, params };
-    const config = {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    const res = await axios.put("/api/user", user, config);
-    dispatch({
-      type: "USER_LOADED",
-      payload: res.data
-    });
-  }
+  // async savePrefs(id, params, dispatch) {
+  //   params.map(param => {
+  //     return param.querySegment = `${param.querySegment}`;
+  //   });
+  //   const user = { id, params };
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     }
+  //   };
+  //   const res = await axios.put("/api/user", user, config);
+  //   dispatch({
+  //     type: "USER_LOADED",
+  //     payload: res.data
+  //   });
+  // }
 
   buildQuery() {
     const queryURL =
@@ -292,72 +257,74 @@ class Build extends Component {
     return queryURL;
   }
 
+  // {
+  //   value => {
+  //       const {
+  //         dispatch,
+  //         isAuthenticated,
+  //         getPrefs,
+  //         user
+  //       } = value;
+  //       const id = user._id;
+  //       const userPrefs = getPrefs();
+  //       if (isAuthenticated && !this.state.loadedPrefs) {
+  //         this.setState({
+  //           params: userPrefs,
+  //           loadedPrefs: true
+  //         });
+  //       }
+
   render() {
     return (
-      <Consumer>
-        {value => {
-          const { dispatch, isAuthenticated, getPrefs, user } = value;
-          const id = user._id;
-          const userPrefs = getPrefs();
-          if (isAuthenticated && !this.state.loadedPrefs) {
-            this.setState({
-              params: userPrefs,
-              loadedPrefs: true
-            });
-          }
-          return (
-            <Fragment>
-              <div className='user-filters-container'>
-                <header className='header header-ext'>your filters</header>
-                {this.state.params.map((param, index) => {
-                  return (
-                    <div>
-                      <button className='btn-user-filter' key={index} name={param.name}>
-                        <span
-                          className='user-filter-label'
-                          onClick={() =>
-                            this.state.edit !== param
-                              ? this.edit(param, index)
-                              : this.edit("", "")
-                          }
-                        >
-                          {param.name}
-                        </span>
-                        <span id='x-spaces' onClick={() => this.removeBtn(index)}>X</span>
-                      </button>
-                      {this.state.edit === param
-                        ? this.renderSwitch(param.type)
-                        : console.log(`${param.name} not selected.`)}
-                    </div>
-                  );
-                })}
-              </div>
+      <Fragment>
+        <div className='user-filters-container'>
+          <header className='header header-ext'>your filters</header>
+          {this.state.params.map((param, index) => {
+            return (
               <div>
-                <header className='header header-ext'> filter list </header>
-                {paramsArr.map((param, index) => {
-                  return (
-                    <button
-                      className='btn-filter-list'
-                      key={index}
-                      name={param.name}
-                      onClick={() => this.addBtn(param)}
-                    >
-                      {param.name}
-                    </button>
-                  );
-                })}
+                <button className='btn-user-filter' key={index} name={param.name}>
+                  <span
+                    className='user-filter-label'
+                    onClick={() =>
+                      this.state.edit !== param
+                        ? this.edit(param, index)
+                        : this.edit("", "")
+                    }
+                  >
+                    {param.name}
+                  </span>
+                  <span id='x-spaces' onClick={() => this.removeBtn(index)}>X</span>
+                </button>
+                {this.state.edit === param
+                  ? this.renderSwitch(param.type)
+                  : console.log(`${param.name} not selected.`)}
               </div>
-              {this.renderSavePrefs(isAuthenticated, id, dispatch)}
-              <h2>
-                Click "Search" once you're done setting all your desired parameters!
-              </h2>
-              <SubmitQuery queryURL={this.buildQuery()} />
-            </Fragment>
-          );
-        }}
-      </Consumer>
+            );
+          })}
+        </div>
+        <div>
+          <header className='header header-ext'> filter list </header>
+          {paramsArr.map((param, index) => {
+            return (
+              <button
+                className='btn-filter-list'
+                key={index}
+                name={param.name}
+                onClick={() => this.addBtn(param)}
+              >
+                {param.name}
+              </button>
+            );
+          })}
+        </div>
+        {/* {this.renderSavePrefs(isAuthenticated, id, dispatch)} */}
+        <h2>
+          Click "Search" once you're done setting all your desired parameters!
+        </h2>
+        <SubmitQuery queryURL={this.buildQuery()} />
+      </Fragment>
     );
   }
-}
+}    
 
 export default Build;
