@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from "react";
+/* global chrome */
+import React, { Component, Fragment, Function } from "react";
 // import axios from "axios";
 import { FormInput, SavePrefs, SelectInput, SubmitQuery } from "./components";
 import defaultPrefs from "./defaultPrefs";
@@ -17,6 +18,17 @@ class Build extends Component {
     editKey: "",
     loadedPrefs: false
   };
+
+  componentDidMount() {
+    //grabs user info from storage
+    chrome.storage.sync.get(["user", "isLoggedIn"], ({user, isLoggedIn}) => {
+      const prefs = isLoggedIn && user.prefs.length!==0 ? user.prefs : defaultPrefs;
+      console.log(prefs);
+      console.log(defaultPrefs);
+      this.setState({ params: defaultPrefs, loadedPrefs: true });
+      //console.log(this.state.prefs);
+    });
+  }
 
   addBtn(param) {
     const updatedParams = this.state.params;
@@ -274,7 +286,18 @@ class Build extends Component {
   //         });
   //       }
 
+
   render() {
+
+    // if (!this.state.receivedPrefs && this.props.loadedPrefs) {
+    //   this.parsePrefs(this.props.prefs);
+    //   this.setState({
+    //     params: this.props.prefs,
+    //     receivedPrefs: true
+    //   });
+    // }
+    // console.log("Render hit:" + this.state.params);
+
     return (
       <Fragment>
         <div className='user-filters-container'>

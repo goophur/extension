@@ -3,6 +3,7 @@
 import React, { Component, Fragment } from "react";
 import Build from "./Build";
 import defaultPrefs from "./defaultPrefs";
+import "./styles/app.css";
 
 class App extends Component {
 
@@ -10,16 +11,14 @@ class App extends Component {
     site: "http://localhost:3000",
     email: "",
     name: "",
-    prefs: [],
     isLoggedIn: false
   }
 
   componentDidMount() {
     //grabs user info from storage
     chrome.storage.sync.get(["user", "isLoggedIn"], ({isLoggedIn, user}) => {
-      const prefs = isLoggedIn && user.prefs.length!==0 ? user.prefs : defaultPrefs;
-      this.setState({ email: user.email, name: user.name, prefs: prefs, isLoggedIn: isLoggedIn });
-      console.log(this.state.prefs);
+      this.setState({ email: user.email, name: user.name, isLoggedIn: isLoggedIn });
+      //console.log(this.state.prefs);
     });
     //gets current tab url.  change state to on google if it matches regex
     // chrome.tabs.executeScript(undefined, { 
@@ -119,7 +118,7 @@ class App extends Component {
       <div className = "App" >
         {this.renderBar()}
         {/* <button onclick={()=>this.handleRefresh()}>(_^</button> */}
-          <Build prefs={this.state.prefs}/>
+          <Build />
         {this.renderFooter()}
       </div>
     );
