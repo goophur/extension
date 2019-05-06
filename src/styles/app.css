@@ -1,0 +1,213 @@
+/* ========= importing fonts from assets file and formatting for browser ========= */
+@font-face {
+	font-family: 'Poppins';
+	src: url('../assets/fonts/Poppins-Regular.ttf') format('truetype');
+	src: url('../assets/fonts/Poppins-Regular.otf') format('opentype');
+	font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('../assets/fonts/Poppins-Medium.ttf') format('truetype');
+	src: url('../assets/fonts/Poppins-Medium.otf') format('opentype');
+	font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('../assets/fonts/Poppins-SemiBold.ttf') format('truetype');
+	src: url('../assets/fonts/Poppins-SemiBold.otf') format('opentype');
+	font-weight: 600;
+  font-style: normal;
+}
+
+/* ========== =sets up backup fonts if montserrat fails ============*/
+
+body {
+  font-family: 'Poppins', 'Roboto', sans-serif;
+  color: #FFFFFF;
+  width: 100vw;
+}
+
+/* ***************************    COMPONENTS, GENERAL STYLES AND FONTS    ***************************** */
+
+.app {
+  background: #71C46F;
+}
+
+
+.logo-lockup-medium{
+  width: 218px;
+  height: 75px;
+
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.header {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 27px;
+  
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+button {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 12px;
+  color: #FFFFFF;
+  /* text-align: center; */
+
+  position: relative;
+  line-height: 19px;
+  padding: 4px 15px;
+  width: auto;
+  margin: 5px 5px;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25), 0px 3px 4px rgba(0, 0, 0, 0.25);
+
+  background: #457E44;
+}
+
+.single-input-field {
+  position: absolute;
+  width: 251px;
+  height: 59px;
+
+  background: #FFFFFF;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.single-input-field-header {
+  position: relative;
+  width: 251px;
+  height: 25px;
+  top: 0%;
+  
+  background: #457E44;
+}
+
+.single-input-field-header-label {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 15px;
+  
+  color: #FFFFFF;
+}
+
+.single-input-field-header-info {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 8px;
+  line-height: 12px; 
+  text-align: right;
+  
+  color: #FFFFFF;
+}
+
+
+/* ***************************                SITE                 ***************************** */
+/* ***************************    POSITIONING AND CUSTOM STYLES    ***************************** */
+
+body {
+  background-color: #71C46F;
+}
+
+.nav-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav-text {
+  color: #FFFFFF;
+  font-size: 12px;
+  margin: 0 5px;
+}
+
+/* ***************************              EXTENSION              ***************************** */
+/* ***************************    POSITIONING AND CUSTOM STYLES    ***************************** */
+
+/* .logo-lockup-top {
+  position: absolute;
+  left: 33px;
+  top: 27px;
+} */
+
+.header-text {
+  margin-top: 10%;
+  margin-bottom: 3%;
+}
+
+.user-filters-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  background: #FFFFFF;
+  width: 200px;
+  border-radius: 0 0 2px 2px;
+  margin-left: 10px;
+  /* margin-top:; */
+
+  z-index: 1;
+}
+
+#x-spaces {
+  position: absolute;
+  right: 10px;
+  text-align: right;
+}
+
+.btn-user-filter {
+  text-align: left;
+
+  width: 200px;
+  border-radius: 2px 2px 0 0;
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom:0px;
+  
+  z-index: 0;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25), 0px 3px 4px rgba(0, 0, 0, 0.25);
+  
+  /* position: absolute;
+  left: 35px;
+  top: 151px; */
+}
+
+/* 
+.header-user-filter {
+  position: absolute;
+  left: 34px;
+  top: 113px;
+}
+
+
+
+
+.input-field {
+  position: absolute;
+  left: 35px;
+  top: 188px;
+}
+
+.header-filter-list {
+  position: absolute;
+  left: 35px;
+  top: 266px;
+}
+
+.btn-filter-list {
+  position: absolute;
+  left: 35px;
+  top: 299px;
+} */

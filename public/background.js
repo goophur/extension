@@ -1,90 +1,55 @@
-const defaultPrefs = [{
-        name: "Search Term(s)",
-        type: "FormInput",
-        value: "",
-        querySegment: value => {
-            return value ? `&as_q=${value.replace(/\s+/g, "+")}` : ""
-        }
-    },
-    {
-        name: "Exact Match",
-        type: "FormInput",
-        value: "",
-        querySegment: value => {
-            return value ? `&as_epq=${value.replace(/\s+/g, "+")}` : ""
-        }
-    },
-    {
-        name: "Include Any",
-        type: "FormInput",
-        value: "",
-        querySegment: value => {
-            return value ? `&as_oq=%28${value.replace(/\s+/g, "+")}%29` : ""
-        }
-    },
-    {
-        name: "Exclude Each",
-        type: "FormInput",
-        value: "",
-        querySegment: value => {
-            return value ? `&as_eq=${value.replace(/\s+/g, "+")}` : ""
-        }
-    },
-]
+const site = "http://localhost:3000";
 
 const setDefaults = async function () {
-    await chrome.storage.sync.set({
-        user: {
-            prefs: defaultPrefs
-        },
+    chrome.storage.sync.set({
+        user: {},
         isLoggedIn: false
     }, () => {
         console.log("defaults set!")
     })
 }
 
-const updateUser = async function (userData) {
-    await chrome.storage.sync.set({
+const updateUser = function (userData) {
+    chrome.storage.sync.set({
         user: userData,
         isLoggedIn: true
     }, () => {
-        console.log("Updated!");
+        console.log("User updated!");
     })
 }
 
 const requestUserData = function (token) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:3000/api/auth", true);
-    xhr.setRequestHeader("x-auth-token", token);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
-            response = xhr.responseText;
-            if (response.msg === "Token is not valid") {
+    const url = `${site}/api/auth`;
+    fetch(url, {
+            method: "GET",
+            headers: {
+                "x-auth-token": token
+            }
+        })
+        .then(response => response.json())
+        .then(jsonRes => {
+            if (jsonRes.msg === "Token is not valid") {
                 console.log("Invalid token");
             } else {
-                console.log(response);
-                updateUser(response);
+                console.log(jsonRes);
+                updateUser(jsonRes);
             }
-        }
-    }
-    xhr.send();
+        })
+        .catch(err => console.log(err))
 }
 
-const checkForCookie = async function () {
-
+const checkForCookie = function () {
     chrome.cookies.get({
-        url: "http://localhost:3000",
+        url: site,
         name: "token",
     }, cookie => {
-        const token = cookie.value;
-        if (token) {
-            requestUserData(token);
+        if (cookie !== null) {
+            const token = cookie.value;
+            if (token) {
+                requestUserData(token);
+            }
         }
     });
-
-    // } catch (err) {
-    //     console.log(err)
-    // }
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -93,7 +58,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 })
 
 
-//might be excessive conditionals here - revise
+//might have excessive conditionals here - revise
 chrome.cookies.onChanged.addListener(({
     removed,
     cookie
