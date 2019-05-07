@@ -339,7 +339,7 @@ class Build extends Component {
         </div>
         <div className='search-submit-container'>
           <p className='search-submit-text'>
-            Click "Search" once you're done setting all your desired parameters!
+            click "Search" once you're done setting all your desired parameters!
           </p>
           <SubmitQuery queryURL={this.buildQuery()} />
         </div>

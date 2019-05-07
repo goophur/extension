@@ -103,14 +103,16 @@ class App extends Component {
     if (this.state.isLoggedIn) {
       return (
         <Fragment>
-          <p> Hi, {this.state.name}! </p>
-          <div onClick={()=>this.handleLogout()}>Logout</div>
+          <p className='helper-text' id='sign-up-link'> hi, {this.state.name}! </p>
+          <p className='helper-text' id='separator-nav'> | </p>
+          <div className='helper-text' id='sign-in-link' onClick={()=>this.handleLogout()}>sign out</div>
         </Fragment>
       )
     } else {
       return (
         <Fragment>
           <a href={`${this.state.site}/register`} target="_blank" rel="noopener noreferrer" className='helper-text' id='sign-up-link'>sign up</a>
+          <p className='helper-text' id='separator-nav'> | </p>
           <a href={`${this.state.site}/login`} target="_blank" rel="noopener noreferrer" className='helper-text' id='sign-in-link'>sign in</a>
         </Fragment>
       )     
