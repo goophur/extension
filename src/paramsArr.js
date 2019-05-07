@@ -19,6 +19,23 @@ const paramsArr = [
         querySegment: value => {return value ? `&as_oq=%28${value.replace(/\s+/g, "+")}%29` : ""}
     },
     {
+        name: "Wild Card",
+        type: "FormInput",
+        value: "",
+        querySegment: value => {
+          let querySegment = value
+          ? `&as_q=${value.replace(/\s+(?=(?:(?:[^"]*"){2})*[^"]*"[^"]*$)/g, "+").replace(/\s+(?=[^\])}]*([\[({]|$))/g, "+*+").replace(/[()[\]{}]/g, "")}`
+          : "";
+          const numSpaces = querySegment.match(/([\s]+)/g) ? querySegment.match(/([\s]+)/g).length : 0;
+          console.log(numSpaces);
+          for (let i = 0; i < numSpaces; i++) {
+            querySegment = querySegment.replace(/\s+/, "+");
+            console.log(querySegment);
+          }
+          return querySegment;
+        }
+    },
+    {
         name: "Exclude Each",
         type: "FormInput",
         value: "",
