@@ -11,23 +11,24 @@ const paramsArr = require("./paramsArr");
 class Build extends Component {
   state = {
     // The array of param objects (each of which includes a name describing its behavior and a value representing the user's input):
-    params: defaultPrefs,
+    params: [],
     // The param whose input the user is currently editing:
     edit: "",
     // The index number by which we will target the unique param button (as distinguished from others with the same name) the user is currently editing:
-    editKey: "",
-    loadedPrefs: false
+    editKey: ""
   };
 
   componentDidMount() {
+    console.log("update");
     //grabs user info from storage
-    chrome.storage.sync.get(["user", "isLoggedIn"], ({user, isLoggedIn}) => {
-      const prefs = isLoggedIn && user.prefs.length!==0 ? user.prefs : defaultPrefs;
-      console.log(prefs);
-      console.log(defaultPrefs);
-      this.setState({ params: defaultPrefs, loadedPrefs: true });
+    // chrome.storage.sync.get(["user", "isLoggedIn"], ({user, isLoggedIn}) => {
+    //   const prefs = isLoggedIn && user.prefs.length!==0 ? this.getParamFcn(user.prefs) : defaultPrefs;
+    //   console.log(prefs);
+    //   console.log(defaultPrefs);
+    //   this.setState({ params: prefs, loadedPrefs: true });
       //console.log(this.state.prefs);
-    });
+      this.setState({ params: this.props.prefs });
+    // });
   }
 
   addBtn(param) {
@@ -286,6 +287,13 @@ class Build extends Component {
   //         });
   //       }
 
+  // getParamFcn(prefs) {
+  //   const userPrefs = prefs;
+  //   userPrefs.map(param => {
+  //     return param.querySegment = fcnSwitch(param);
+  //   });
+  //   return userPrefs;
+  // }
 
   render() {
 
