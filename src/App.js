@@ -1,0 +1,143 @@
+/* global chrome */
+
+import React, { Component, Fragment } from "react";
+import Build from "./Build";
+import defaultPrefs from "./defaultPrefs";
+import "./styles/app.css";
+
+class App extends Component {
+
+  state = {
+    site: "http://localhost:3000",
+    email: "",
+    name: "",
+    isLoggedIn: false
+  }
+
+  componentDidMount() {
+    //grabs user info from storage
+    chrome.storage.sync.get(["user", "isLoggedIn"], ({isLoggedIn, user}) => {
+      this.setState({ email: user.email, name: user.name, isLoggedIn: isLoggedIn });
+      //console.log(this.state.prefs);
+    });
+    //gets current tab url.  change state to on google if it matches regex
+    // chrome.tabs.executeScript(undefined, { 
+    //   code: "chrome.tabs.getCurrent(tab=>tab.url)"
+    //   },
+    //   result => {
+    //     console.log(result);
+    //   })
+  }
+
+  clearState() {
+    this.setState({
+      email: "",
+      name: "",
+      prefs: [],
+      isLoggedIn: false
+    })
+  }
+
+  handleLogout() {
+    chrome.cookies.remove({
+      url: this.state.site,
+      name: "token"
+    }, 
+    details => {console.log("Login cookie deleted", details)});
+    this.clearState();
+  }
+
+  // requestUserData(token) {
+  //   const url = this.state.site;
+  //   fetch(url, {
+  //       method: "GET",
+  //       headers: {
+  //         "x-auth-token": token
+  //       }
+  //     })
+  //     .then(response => response.json())
+  //     .then(userData => {
+  //       if (userData.msg === "Token is not valid") {
+  //         this.handleLogout();
+  //       } else {
+  //         console.log(userData);
+  //         const { email, name, prefs } = userData;
+  //         this.setState({ email, name, prefs, isLoggedIn: true })
+  //       }
+  //     })
+  //     .catch(err => console.log(err))
+  // }
+
+  // handleRefresh() {
+  //   console.log("insideRefresh");
+  //   chrome.cookies.get({
+  //     url: this.state.site,
+  //     name: "token",
+  //   }, cookie => {
+  //     if (cookie === null) {
+  //       this.clearState();
+  //     } else {
+  //       console.log("Got token from cookie")
+  //       const token = cookie.value;
+  //       if (token) {
+  //         this.requestUserData(token);
+  //       }
+  //     }
+  //   })
+  // }
+
+  renderBar() {
+    if (this.state.isLoggedIn) {
+      return (
+        <Fragment>
+          <p> Hi, {this.state.name}! </p>
+          <button onClick={()=>this.handleLogout()}>Logout</button>
+        </Fragment>
+      )
+    } else {
+      return (
+        <Fragment>
+          <a href={`${this.state.site}/register`} target="_blank" rel="noopener noreferrer" className='helper-text' id='sign-up-link'>sign up</a>
+          <a href={`${this.state.site}/login`} target="_blank" rel="noopener noreferrer" className='helper-text' id='sign-in-link'>sign in</a>
+        </Fragment>
+      )     
+    }
+  }
+
+  renderFooter() {
+    const link = this.state.isLoggedIn ? `${this.state.site}/prefs` : `${this.state.site}/register`;
+    return (
+      <a 
+        href={link} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className='helper-text'
+        id='footer-links'> 
+          click <span id='here-click-text'>here</span> to update your default filter choices!
+      </a>
+    )
+  }
+
+
+
+  render() {
+    return (
+      <div className="App" >
+        <div className='nav-container'>
+          <img 
+            className='logo-lockup-top'
+            src={require('./assets/goophur-lockup-extension.png')}
+          />
+          {this.renderBar()}
+        </div>
+        {/* <button onclick={()=>this.handleRefresh()}>(_^</button> */}
+          <Build />
+        <div className='footer-container'>
+          {this.renderFooter()}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;
