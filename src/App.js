@@ -97,8 +97,8 @@ class App extends Component {
     } else {
       return (
         <Fragment>
-          <a href={`${this.state.site}/register`} target="_blank" rel="noopener noreferrer">Register</a>
-          <a href={`${this.state.site}/login`} target="_blank" rel="noopener noreferrer">Login</a>
+          <a href={`${this.state.site}/register`} target="_blank" rel="noopener noreferrer" className='helper-text' id='sign-up-link'>sign up</a>
+          <a href={`${this.state.site}/login`} target="_blank" rel="noopener noreferrer" className='helper-text' id='sign-in-link'>sign in</a>
         </Fragment>
       )     
     }
@@ -107,7 +107,14 @@ class App extends Component {
   renderFooter() {
     const link = this.state.isLoggedIn ? `${this.state.site}/prefs` : `${this.state.site}/register`;
     return (
-      <a href={link} target="_blank" rel="noopener noreferrer">Update your default query choices here!</a>
+      <a 
+        href={link} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className='helper-text'
+        id='footer-links'> 
+          click <span id='here-click-text'>here</span> to update your default filter choices!
+      </a>
     )
   }
 
@@ -115,11 +122,19 @@ class App extends Component {
 
   render() {
     return (
-      <div className = "App" >
-        {this.renderBar()}
+      <div className="App" >
+        <div className='nav-container'>
+          <img 
+            className='logo-lockup-top'
+            src={require('./assets/goophur-lockup-extension.png')}
+          />
+          {this.renderBar()}
+        </div>
         {/* <button onclick={()=>this.handleRefresh()}>(_^</button> */}
           <Build />
-        {this.renderFooter()}
+        <div className='footer-container'>
+          {this.renderFooter()}
+        </div>
       </div>
     );
   }
