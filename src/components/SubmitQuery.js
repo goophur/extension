@@ -5,7 +5,7 @@ class SubmitQuery extends Component {
     return(
       <div>
         <a href={this.props.queryURL} rel="noopener noreferrer" target="_blank">
-          <button>Search</button>
+          <button id='search-btn'>Search</button>
         </a>
       </div>
     );

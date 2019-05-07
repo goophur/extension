@@ -115,7 +115,7 @@ class Build extends Component {
         );
       case "Range":
         return (
-          <div>
+          <div className='input-div'>
             <FormInput
               name={this.state.edit.name + "Low"}
               value={editedRange.value[0]}
@@ -132,7 +132,7 @@ class Build extends Component {
         );
       case "RangeWithUnits":
         return (
-          <div>
+          <div className='input-div'>
             <FormInput
               name={this.state.edit.name + "Low"}
               value={editedRangeWithUnits.value[0]}
@@ -310,9 +310,13 @@ class Build extends Component {
       <Fragment>
         <div className='user-filters-container'>
           <header className='header header-ext'>your filters</header>
+          <p className='user-filters-text'> 
+            below are your current search filters, 
+            click one to see the details or make changes 
+          </p>
           {this.state.params.map((param, index) => {
             return (
-              <div>
+              <div className='input-div'>
                 <button className='btn-user-filter' key={index} name={param.name}>
                   <span
                     className='user-filter-label'
@@ -333,7 +337,13 @@ class Build extends Component {
             );
           })}
         </div>
-        <div>
+        <div className='search-submit-container'>
+          <p className='search-submit-text'>
+            Click "Search" once you're done setting all your desired parameters!
+          </p>
+          <SubmitQuery queryURL={this.buildQuery()} />
+        </div>
+        <div className='filter-list-container'>
           <header className='header header-ext'> filter list </header>
           {paramsArr.map((param, index) => {
             return (
@@ -349,10 +359,10 @@ class Build extends Component {
           })}
         </div>
         {/* {this.renderSavePrefs(isAuthenticated, id, dispatch)} */}
-        <h2>
+        {/* <h2>
           Click "Search" once you're done setting all your desired parameters!
         </h2>
-        <SubmitQuery queryURL={this.buildQuery()} />
+        <SubmitQuery queryURL={this.buildQuery()} /> */}
       </Fragment>
     );
   }
