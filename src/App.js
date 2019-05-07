@@ -5,19 +5,32 @@ import Build from "./Build";
 import defaultPrefs from "./defaultPrefs";
 import "./styles/app.css";
 
+const fcnSwitch = require("./paramFcns");
+
 class App extends Component {
 
   state = {
     site: "http://localhost:3000",
     email: "",
     name: "",
-    isLoggedIn: false
+    prefs: [],
+    isLoggedIn: false,
+    prefsAreLoaded: false
+  }
+
+  getParamFcn(prefs) {
+    const userPrefs = prefs;
+    userPrefs.map(param => {
+      return param.querySegment = fcnSwitch(param);
+    });
+    return userPrefs;
   }
 
   componentDidMount() {
     //grabs user info from storage
     chrome.storage.sync.get(["user", "isLoggedIn"], ({isLoggedIn, user}) => {
-      this.setState({ email: user.email, name: user.name, isLoggedIn: isLoggedIn });
+      const prefs = isLoggedIn && user.prefs.length !== 0 ? this.getParamFcn(user.prefs) : defaultPrefs;
+      this.setState({ email: user.email, name: user.name, prefs, isLoggedIn: isLoggedIn , prefsAreLoaded: true });
       //console.log(this.state.prefs);
     });
     //gets current tab url.  change state to on google if it matches regex
@@ -33,7 +46,7 @@ class App extends Component {
     this.setState({
       email: "",
       name: "",
-      prefs: [],
+      prefs: defaultPrefs,
       isLoggedIn: false
     })
   }
@@ -91,7 +104,7 @@ class App extends Component {
       return (
         <Fragment>
           <p> Hi, {this.state.name}! </p>
-          <button onClick={()=>this.handleLogout()}>Logout</button>
+          <div onClick={()=>this.handleLogout()}>Logout</div>
         </Fragment>
       )
     } else {
@@ -101,6 +114,12 @@ class App extends Component {
           <a href={`${this.state.site}/login`} target="_blank" rel="noopener noreferrer">Login</a>
         </Fragment>
       )     
+    }
+  }
+
+  renderBuild() {
+    if (this.state.prefsAreLoaded) {
+      return <Build prefs={this.state.prefs} />
     }
   }
 
@@ -118,7 +137,7 @@ class App extends Component {
       <div className = "App" >
         {this.renderBar()}
         {/* <button onclick={()=>this.handleRefresh()}>(_^</button> */}
-          <Build />
+        {this.renderBuild()}
         {this.renderFooter()}
       </div>
     );
