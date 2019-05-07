@@ -4,6 +4,7 @@ import React, { Component, Fragment, Function } from "react";
 import { FormInput, SavePrefs, SelectInput, SubmitQuery } from "./components";
 import defaultPrefs from "./defaultPrefs";
 const paramsArr = require("./paramsArr");
+const fcnSwitch = require("./paramFcns");
 
 // An array containing only those parameters that are set to be displayed by default in the user's prefs.
 // Until we get the user-specific information from the database, we will use the following as the default/placeholder:
@@ -22,10 +23,10 @@ class Build extends Component {
   componentDidMount() {
     //grabs user info from storage
     chrome.storage.sync.get(["user", "isLoggedIn"], ({user, isLoggedIn}) => {
-      const prefs = isLoggedIn && user.prefs.length!==0 ? user.prefs : defaultPrefs;
+      const prefs = isLoggedIn && user.prefs.length!==0 ? this.getParamFcn(user.prefs) : defaultPrefs;
       console.log(prefs);
       console.log(defaultPrefs);
-      this.setState({ params: defaultPrefs, loadedPrefs: true });
+      this.setState({ params: prefs, loadedPrefs: true });
       //console.log(this.state.prefs);
     });
   }
@@ -286,6 +287,13 @@ class Build extends Component {
   //         });
   //       }
 
+  getParamFcn(prefs) {
+    const userPrefs = prefs;
+    userPrefs.map(param => {
+      return param.querySegment = fcnSwitch(param);
+    });
+    return userPrefs;
+  }
 
   render() {
 
