@@ -48,10 +48,12 @@ class App extends Component {
       name: "",
       prefs: defaultPrefs,
       isLoggedIn: false
-    })
+    });
+    setTimeout(()=>this.setState({ prefsAreLoaded: true }), 10);
   }
 
   handleLogout() {
+    this.setState({ prefsAreLoaded: false });
     chrome.cookies.remove({
       url: this.state.site,
       name: "token"
