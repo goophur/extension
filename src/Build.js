@@ -20,15 +20,7 @@ class Build extends Component {
 
   componentDidMount() {
     console.log("update");
-    //grabs user info from storage
-    // chrome.storage.sync.get(["user", "isLoggedIn"], ({user, isLoggedIn}) => {
-    //   const prefs = isLoggedIn && user.prefs.length!==0 ? this.getParamFcn(user.prefs) : defaultPrefs;
-    //   console.log(prefs);
-    //   console.log(defaultPrefs);
-    //   this.setState({ params: prefs, loadedPrefs: true });
-      //console.log(this.state.prefs);
       this.setState({ params: this.props.prefs });
-    // });
   }
 
   addBtn(param) {
@@ -270,41 +262,8 @@ class Build extends Component {
     return queryURL;
   }
 
-  // {
-  //   value => {
-  //       const {
-  //         dispatch,
-  //         isAuthenticated,
-  //         getPrefs,
-  //         user
-  //       } = value;
-  //       const id = user._id;
-  //       const userPrefs = getPrefs();
-  //       if (isAuthenticated && !this.state.loadedPrefs) {
-  //         this.setState({
-  //           params: userPrefs,
-  //           loadedPrefs: true
-  //         });
-  //       }
-
-  // getParamFcn(prefs) {
-  //   const userPrefs = prefs;
-  //   userPrefs.map(param => {
-  //     return param.querySegment = fcnSwitch(param);
-  //   });
-  //   return userPrefs;
-  // }
 
   render() {
-
-    // if (!this.state.receivedPrefs && this.props.loadedPrefs) {
-    //   this.parsePrefs(this.props.prefs);
-    //   this.setState({
-    //     params: this.props.prefs,
-    //     receivedPrefs: true
-    //   });
-    // }
-    // console.log("Render hit:" + this.state.params);
 
     return (
       <Fragment>
