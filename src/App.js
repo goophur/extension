@@ -1,5 +1,5 @@
 /* global chrome */
-
+import axios from "axios";
 import React, { Component, Fragment } from "react";
 import Build from "./Build";
 import defaultPrefs from "./defaultPrefs";
@@ -10,7 +10,7 @@ const fcnSwitch = require("./paramFcns");
 class App extends Component {
 
   state = {
-    site: "http://localhost:3000",
+    site: "http://goophur.herokuapp.com",
     email: "",
     name: "",
     prefs: [],
@@ -28,11 +28,13 @@ class App extends Component {
 
   componentDidMount() {
     //grabs user info from storage
-    chrome.storage.sync.get(["user", "isLoggedIn"], ({isLoggedIn, user}) => {
-      const prefs = isLoggedIn && user.prefs.length !== 0 ? this.getParamFcn(user.prefs) : defaultPrefs;
-      this.setState({ email: user.email, name: user.name, prefs, isLoggedIn: isLoggedIn , prefsAreLoaded: true });
-      //console.log(this.state.prefs);
-    });
+    // chrome.storage.sync.get(["user", "isLoggedIn"], ({isLoggedIn, user}) => {
+    //   const prefs = isLoggedIn && user.prefs.length !== 0 ? this.getParamFcn(user.prefs) : defaultPrefs;
+    //   this.setState({ email: user.email, name: user.name, prefs, isLoggedIn: isLoggedIn, prefsAreLoaded: true });
+    //   //console.log(this.state.prefs);
+    // });
+
+    this.handleRefresh();
     //gets current tab url.  change state to on google if it matches regex
     // chrome.tabs.executeScript(undefined, { 
     //   code: "chrome.tabs.getCurrent(tab=>tab.url)"
@@ -62,44 +64,44 @@ class App extends Component {
     this.clearState();
   }
 
-  // requestUserData(token) {
-  //   const url = this.state.site;
-  //   fetch(url, {
-  //       method: "GET",
-  //       headers: {
-  //         "x-auth-token": token
-  //       }
-  //     })
-  //     .then(response => response.json())
-  //     .then(userData => {
-  //       if (userData.msg === "Token is not valid") {
-  //         this.handleLogout();
-  //       } else {
-  //         console.log(userData);
-  //         const { email, name, prefs } = userData;
-  //         this.setState({ email, name, prefs, isLoggedIn: true })
-  //       }
-  //     })
-  //     .catch(err => console.log(err))
-  // }
+  requestUserData(token) {
+    const url = `${this.state.site}/api/auth`;
+    axios.defaults.headers.common["x-auth-token"] = token;
+    axios.get(url).then(
+      (response, error) => {
+        if (error) throw error;
+        const user = response.data;
+        if (user.msg === "Token is not valid") {
+          this.handleLogout();
+        } else {
+          console.log(user);
+          const prefs = user.prefs.length !== 0 ? this.getParamFcn(user.prefs) : defaultPrefs;
+          console.log(prefs);
+          const { email, name } = user;
+          this.setState({ email, name, prefs, isLoggedIn: true, prefsAreLoaded: true });
+        }
+      }
+    ).catch(err => console.log(err));
+  }
 
-  // handleRefresh() {
-  //   console.log("insideRefresh");
-  //   chrome.cookies.get({
-  //     url: this.state.site,
-  //     name: "token",
-  //   }, cookie => {
-  //     if (cookie === null) {
-  //       this.clearState();
-  //     } else {
-  //       console.log("Got token from cookie")
-  //       const token = cookie.value;
-  //       if (token) {
-  //         this.requestUserData(token);
-  //       }
-  //     }
-  //   })
-  // }
+  handleRefresh() {
+    console.log("inside refresh");
+    chrome.cookies.get({
+      url: this.state.site,
+      name: "token",
+    }, cookie => {
+      if (cookie === null) {
+        this.clearState();
+      } else {
+        console.log("Got token from cookie")
+        const token = cookie.value;
+        if (token) {
+          console.log(token);
+          this.requestUserData(token);
+        }
+      }
+    })
+  }
 
   renderBar() {
     if (this.state.isLoggedIn) {
