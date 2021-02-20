@@ -1,4 +1,4 @@
-const site = "http://localhost:3000";
+const site = "http://goophur.herokuapp.com"
 
 const setDefaults = async function () {
     chrome.storage.sync.set({

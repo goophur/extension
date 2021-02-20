@@ -11,23 +11,16 @@ const paramsArr = require("./paramsArr");
 class Build extends Component {
   state = {
     // The array of param objects (each of which includes a name describing its behavior and a value representing the user's input):
-    params: defaultPrefs,
+    params: [],
     // The param whose input the user is currently editing:
     edit: "",
     // The index number by which we will target the unique param button (as distinguished from others with the same name) the user is currently editing:
-    editKey: "",
-    loadedPrefs: false
+    editKey: ""
   };
 
   componentDidMount() {
-    //grabs user info from storage
-    chrome.storage.sync.get(["user", "isLoggedIn"], ({user, isLoggedIn}) => {
-      const prefs = isLoggedIn && user.prefs.length!==0 ? user.prefs : defaultPrefs;
-      console.log(prefs);
-      console.log(defaultPrefs);
-      this.setState({ params: defaultPrefs, loadedPrefs: true });
-      //console.log(this.state.prefs);
-    });
+    console.log("update");
+      this.setState({ params: this.props.prefs });
   }
 
   addBtn(param) {
@@ -269,34 +262,8 @@ class Build extends Component {
     return queryURL;
   }
 
-  // {
-  //   value => {
-  //       const {
-  //         dispatch,
-  //         isAuthenticated,
-  //         getPrefs,
-  //         user
-  //       } = value;
-  //       const id = user._id;
-  //       const userPrefs = getPrefs();
-  //       if (isAuthenticated && !this.state.loadedPrefs) {
-  //         this.setState({
-  //           params: userPrefs,
-  //           loadedPrefs: true
-  //         });
-  //       }
-
 
   render() {
-
-    // if (!this.state.receivedPrefs && this.props.loadedPrefs) {
-    //   this.parsePrefs(this.props.prefs);
-    //   this.setState({
-    //     params: this.props.prefs,
-    //     receivedPrefs: true
-    //   });
-    // }
-    // console.log("Render hit:" + this.state.params);
 
     return (
       <Fragment>
@@ -331,7 +298,7 @@ class Build extends Component {
         </div>
         <div className='search-submit-container'>
           <p className='search-submit-text'>
-            Click "Search" once you're done setting all your desired parameters!
+            click "Search" once you're done setting all your desired parameters!
           </p>
           <SubmitQuery queryURL={this.buildQuery()} />
         </div>
